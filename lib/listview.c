@@ -16,6 +16,9 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
+
+#include <malloc.h>
 
 #include "listview.h"
 #include "framebuffer.h"

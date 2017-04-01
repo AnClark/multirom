@@ -19,6 +19,9 @@
 #include <pthread.h>
 #include <stdio.h>
 
+#include <string.h>
+#include <malloc.h>
+
 #include "pw_ui.h"
 #include "encmnt_defines.h"
 #include "../lib/framebuffer.h"

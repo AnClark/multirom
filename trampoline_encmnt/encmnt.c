@@ -21,6 +21,8 @@
 #include <dirent.h>
 #include <errno.h>
 
+#include <malloc.h>
+
 #include "../lib/log.h"
 #include "../lib/fstab.h"
 #include "../lib/framebuffer.h"

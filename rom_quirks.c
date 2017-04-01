@@ -23,6 +23,8 @@
 #include <ctype.h>
 #include <sys/types.h>
 
+#include <malloc.h>
+
 #include "rom_quirks.h"
 #include "lib/log.h"
 #include "lib/util.h"

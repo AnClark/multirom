@@ -25,7 +25,11 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <cutils/android_reboot.h>
+
+
+#include <malloc.h>
 #include <unistd.h>
+
 
 #ifdef HAVE_SELINUX
 #include <selinux/label.h>

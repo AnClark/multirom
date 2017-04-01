@@ -26,6 +26,10 @@ LOCAL_CFLAGS += -DPRODUCT_MODEL="\"$(PRODUCT_MODEL)\"" -DPRODUCT_MANUFACTURER="\
 # to find fstab
 LOCAL_CFLAGS += -DTARGET_DEVICE="\"$(TARGET_DEVICE)\""
 
+# ANCLARK MODIFIED ON 2017-4-1
+# Define _GNU_SOURCE to deal with ambiguous errors
+LOCAL_CFLAGS += -D_GNU_SOURCE -D__GNU_SOURCE
+
 ifneq ($(MR_DEVICE_HOOKS),)
 ifeq ($(MR_DEVICE_HOOKS_VER),)
     $(info MR_DEVICE_HOOKS is set but MR_DEVICE_HOOKS_VER is not specified!)

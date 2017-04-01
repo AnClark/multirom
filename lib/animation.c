@@ -20,6 +20,8 @@
 #include <pthread.h>
 #include <math.h>
 
+#include <malloc.h>
+
 #include "log.h"
 #include "workers.h"
 #include "animation.h"

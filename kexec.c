@@ -19,6 +19,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <malloc.h>
+
 #include "kexec.h"
 #include "lib/containers.h"
 #include "lib/log.h"

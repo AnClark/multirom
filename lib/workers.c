@@ -19,6 +19,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <string.h>
+#include <malloc.h>
+
 #include "util.h"
 #include "workers.h"
 #include "log.h"

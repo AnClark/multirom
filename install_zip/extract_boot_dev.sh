@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 FSTAB="$1"
 DEST_FILE="$2"
 

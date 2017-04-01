@@ -17,6 +17,8 @@
 
 #include <unistd.h>
 
+#include <malloc.h>
+
 #include "progressdots.h"
 #include "colors.h"
 #include "workers.h"

@@ -19,6 +19,9 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <malloc.h>
+#include <string.h>
+
 #include "tabview.h"
 #include "containers.h"
 #include "util.h"

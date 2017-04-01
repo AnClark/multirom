@@ -32,6 +32,10 @@ common_C_INCLUDES := $(multirom_local_path)/lib \
 # is quick enough to be done in an animation
 common_C_FLAGS := -O3 -funsafe-math-optimizations
 
+# ANCLARK MODIFIED ON 2017-4-1
+# Define _GNU_SOURCE to deal with ambiguous errors
+LOCAL_CFLAGS += -D_GNU_SOURCE -D__GNU_SOURCE
+
 ifeq ($(MR_INPUT_TYPE),)
     MR_INPUT_TYPE := type_b
 endif
@@ -65,6 +69,10 @@ LOCAL_CFLAGS += $(common_C_FLAGS)
 LOCAL_C_INCLUDES += $(common_C_INCLUDES)
 LOCAL_SRC_FILES := $(common_SRC_FILES)
 
+# ANCLARK MODIFIED ON 2017-4-1
+# Define _GNU_SOURCE to deal with ambiguous errors
+LOCAL_CFLAGS += -D_GNU_SOURCE -D__GNU_SOURCE
+
 include $(multirom_local_path)/device_defines.mk
 
 include $(BUILD_STATIC_LIBRARY)
@@ -79,6 +87,10 @@ LOCAL_SHARED_LIBRARIES := libcutils libc libm libpng libz libft2
 LOCAL_CFLAGS += $(common_C_FLAGS)
 LOCAL_SRC_FILES := $(common_SRC_FILES)
 LOCAL_C_INCLUDES += $(common_C_INCLUDES)
+
+# ANCLARK MODIFIED ON 2017-4-1
+# Define _GNU_SOURCE to deal with ambiguous errors
+LOCAL_CFLAGS += -D_GNU_SOURCE -D__GNU_SOURCE
 
 include $(multirom_local_path)/device_defines.mk
 
@@ -138,6 +150,10 @@ LOCAL_CFLAGS += -W -Wall
 LOCAL_CFLAGS += -fPIC -DPIC
 LOCAL_CFLAGS += "-DDARWIN_NO_CARBON"
 LOCAL_CFLAGS += "-DFT2_BUILD_LIBRARY"
+
+# ANCLARK MODIFIED ON 2017-4-1
+# Define _GNU_SOURCE to deal with ambiguous errors
+LOCAL_CFLAGS += -D_GNU_SOURCE -D__GNU_SOURCE
 
 LOCAL_STATIC_LIBRARIES += libpng libz
 

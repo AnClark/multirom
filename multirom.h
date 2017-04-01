@@ -20,6 +20,7 @@
 
 #include <pthread.h>
 #include <stdio.h>
+#include <malloc.h>
 
 #include "lib/fstab.h"
 #include "lib/containers.h"

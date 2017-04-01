@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include <malloc.h>
+
 #include "lib/log.h"
 #include "rcadditions.h"
 

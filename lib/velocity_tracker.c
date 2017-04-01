@@ -16,6 +16,9 @@
 
 #include <stdlib.h>
 
+#include <string.h>
+#include <malloc.h>
+
 #include "touch_tracker.h"
 #include "util.h"
 

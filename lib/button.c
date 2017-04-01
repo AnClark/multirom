@@ -17,6 +17,8 @@
 
 #include <stdlib.h>
 
+#include <malloc.h>
+
 #include "button.h"
 #include "input.h"
 #include "util.h"

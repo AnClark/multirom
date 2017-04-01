@@ -24,6 +24,8 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+#include <string.h>
+
 #include "../lib/fstab.h"
 #include "../lib/util.h"
 #include "../lib/log.h"

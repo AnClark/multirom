@@ -28,6 +28,9 @@
 #include <dirent.h>
 #include <assert.h>
 
+#include <string.h>
+#include <malloc.h>
+
 #include "input.h"
 #include "input_priv.h"
 #include "framebuffer.h"

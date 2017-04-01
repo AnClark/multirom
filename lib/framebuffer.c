@@ -34,6 +34,9 @@
 #include <png.h>
 #include <math.h>
 
+#include <string.h>
+#include <malloc.h>
+
 #include "log.h"
 #include "framebuffer.h"
 #include "util.h"

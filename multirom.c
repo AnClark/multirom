@@ -30,6 +30,9 @@
 #include <ctype.h>
 #include <unistd.h>
 
+
+#include <malloc.h>
+
 // clone libbootimg to /system/extras/ from
 // https://github.com/Tasssadar/libbootimg.git
 #include <libbootimg.h>

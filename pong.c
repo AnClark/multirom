@@ -22,6 +22,9 @@
 #include <math.h>
 #include <stdio.h>
 
+#include <string.h>
+#include <malloc.h>
+
 #include "lib/framebuffer.h"
 #include "lib/input.h"
 #include "pong.h"

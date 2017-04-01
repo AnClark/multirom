@@ -19,6 +19,10 @@ endif
 
 LOCAL_C_INCLUDES += $(multirom_local_path) $(mr_twrp_path) $(mr_twrp_path)/crypto/scrypt/lib/crypto external/openssl/include external/boringssl/include
 
+# ANCLARK MODIFIED ON 2017-4-1
+# Define _GNU_SOURCE to deal with ambiguous errors
+LOCAL_CFLAGS += -D_GNU_SOURCE -D__GNU_SOURCE
+
 LOCAL_SRC_FILES := \
     encmnt.c \
     pw_ui.c \

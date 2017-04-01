@@ -28,6 +28,8 @@
 #include <sys/klog.h>
 #include <linux/loop.h>
 
+#include <malloc.h>
+
 #include "adb.h"
 #include "../lib/util.h"
 #include "../lib/log.h"
