@@ -34,6 +34,33 @@ ifneq ($(MR_DEVICE_VARIANTS),)
 	MR_DEVICES += $(MR_DEVICE_VARIANTS)
 endif
 
+# ANCLARK MODIFIED on 2017-4-4
+# Qualcomm devices require their own fstab format (fstab.qcom) to work with encryption. 
+# However, this format is not supported by extract_boot_dev.sh. So an exception will occur.
+# To resume making multirom zip, we must prepare another fstab to its appetite.
+ifeq ($(MR_USE_QCOM_SPECIFIED_FSTAB), true)
+    $(info =================================================================================================================)
+    $(info                                          N O T I C E !)
+    $(info -----------------------------------------------------------------------------------------------------------------)
+    $(info This device uses Qualcomm specified fstab file.)
+    $(info ------ You can know its syntax by reading /fstab.qcom on your device.)
+    $(info =================================================================================================================)
+    ifndef MR_FSTAB_FOR_EXTRACTING_BOOTDEV
+        $(error You must specify a standard fstab which Multirom can recognize to generate bootdev info-file. Set it through var MR_FSTAB_FOR_EXTRACTING_BOOTDEV)
+    else
+        MR_FSTAB_FOR_EXTRACTING_BOOTDEV := $(MR_FSTAB_FOR_EXTRACTING_BOOTDEV)
+    endif
+else
+    $(info =================================================================================================================)
+    $(info                                          N O T I C E !)
+    $(info -----------------------------------------------------------------------------------------------------------------)
+    $(info   Now Multirom will directly use mrom.fstab you specified.)
+    $(info   If you use a Qualcomm device with encryption, you may have to specify a fstab written in Qualcomm's format.)
+    $(info   ------ You can know its syntax by reading /fstab.qcom on your device.)
+    $(info =================================================================================================================)
+    MR_FSTAB_FOR_EXTRACTING_BOOTDEV := $(MR_FSTAB)
+endif
+
 $(MULTIROM_ZIP_TARGET): multirom trampoline signapk bbootimg mrom_kexec_static mrom_adbd $(multirom_extra_dep)
 	@echo
 	@echo
@@ -71,7 +98,7 @@ $(MULTIROM_ZIP_TARGET): multirom trampoline signapk bbootimg mrom_kexec_static m
 	if [ -n "$(MR_INFOS)" ]; then cp -r $(PWD)/$(MR_INFOS)/* $(MULTIROM_INST_DIR)/multirom/infos/; fi
 	cp -a $(TARGET_OUT_OPTIONAL_EXECUTABLES)/bbootimg $(MULTIROM_INST_DIR)/scripts/
 	cp $(PWD)/$(MR_FSTAB) $(MULTIROM_INST_DIR)/multirom/mrom.fstab
-	$(install_zip_path)/extract_boot_dev.sh $(PWD)/$(MR_FSTAB) $(MULTIROM_INST_DIR)/scripts/bootdev
+	$(install_zip_path)/extract_boot_dev.sh $(PWD)/$(MR_FSTAB_FOR_EXTRACTING_BOOTDEV) $(MULTIROM_INST_DIR)/scripts/bootdev
 	$(install_zip_path)/make_updater_script.sh "$(MR_DEVICES)" $(MULTIROM_INST_DIR)/META-INF/com/google/android "Installing MultiROM for"
 	rm -f $(MULTIROM_ZIP_TARGET).zip $(MULTIROM_ZIP_TARGET)-unsigned.zip
 	cd $(MULTIROM_INST_DIR) && zip -qr ../$(notdir $@)-unsigned.zip *

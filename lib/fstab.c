@@ -23,6 +23,8 @@
 #include <unistd.h>
 #include <dirent.h>
 
+#include <malloc.h>
+
 #include "fstab.h"
 #include "util.h"
 #include "log.h"

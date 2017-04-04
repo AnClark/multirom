@@ -1,6 +1,5 @@
 # Assert check for appropriate device is added during build,
 # see ../make_updater_script.sh and ../Android.mk
-
 ui_print("Extracting binaries...");
 run_program("/sbin/busybox", "mount", "/data");
 
