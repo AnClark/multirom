@@ -15,16 +15,6 @@ endif
 multirom_extra_dep :=
 ifeq ($(MR_ENCRYPTION),true)
 	multirom_extra_dep += trampoline_encmnt linker
-	
-	# ANCLARK MODIFIED on 2017-4-4
-	# Dependency file list for trampoline_encmnt.
-	# NOTICE: Qualcomm devices have their own essential vendor-lib: libcryptfs_hw. This file links to a number of shared libraries.	
-	TRAMPOLINE_ENCMNT_DEPENDENCIES := \
-		libbacktrace.so libbase.so libcryptfslollipop.so \
-		libcrypto.so libc.so libc++.so libcutils.so libdl.so \
-		libhardware.so liblog.so libm.so libunwind.so libutils.so
-	TRAMPOLINE_ENCMNT_DEPENDENCIES_VENDOR := libcryptfs_hw.so
-
 else
 	MR_ENCRYPTION := false
 endif
@@ -53,17 +43,22 @@ $(MULTIROM_ZIP_TARGET): multirom trampoline signapk bbootimg mrom_kexec_static m
 	cp -a $(TARGET_OUT_OPTIONAL_EXECUTABLES)/mrom_kexec_static $(MULTIROM_INST_DIR)/multirom/kexec
 	cp -a $(TARGET_OUT_OPTIONAL_EXECUTABLES)/mrom_adbd $(MULTIROM_INST_DIR)/multirom/adbd
 
-	# ANCLARK MODIFIED ON 2017-4-3
-	# Bugfix: All possible dependencies should be added.
-	# NOTICE: Should specify dependency file list above (TRAMPOLINE_ENCMNT_DEPENDENCIES and TRAMPOLINE_ENCMNT_DEPENDENCIES_VENDOR).
 	if $(MR_ENCRYPTION); then \
 		mkdir -p $(MULTIROM_INST_DIR)/multirom/enc/res; \
 		cp -a $(TARGET_ROOT_OUT)/trampoline_encmnt $(MULTIROM_INST_DIR)/multirom/enc/; \
 		cp -a $(TARGET_OUT_EXECUTABLES)/linker $(MULTIROM_INST_DIR)/multirom/enc/; \
 		cp -a $(install_zip_path)/prebuilt-installer/multirom/res/Roboto-Regular.ttf $(MULTIROM_INST_DIR)/multirom/enc/res/; \
 		\
-		for f in $(TRAMPOLINE_ENCMNT_DEPENDENCIES); do cp -av $(TARGET_OUT_SHARED_LIBRARIES)/$$f $(MULTIROM_INST_DIR)/multirom/enc/; done; \
-		for f in $(TRAMPOLINE_ENCMNT_DEPENDENCIES_VENDOR); do cp -av $(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/$$f $(MULTIROM_INST_DIR)/multirom/enc/; done; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libcryptfslollipop.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libcrypto.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libc.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libcutils.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libdl.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libhardware.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/liblog.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libm.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libstdc++.so $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_SHARED_LIBRARIES)/libc++.so $(MULTIROM_INST_DIR)/multirom/enc/; \
 		if [ -n "$(MR_ENCRYPTION_SETUP_SCRIPT)" ]; then sh "$(ANDROID_BUILD_TOP)/$(MR_ENCRYPTION_SETUP_SCRIPT)" "$(ANDROID_BUILD_TOP)" "$(MULTIROM_INST_DIR)/multirom/enc"; fi; \
 	fi
 
