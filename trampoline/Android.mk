@@ -42,6 +42,13 @@ endif
 ifeq ($(MR_ENCRYPTION),true)
     LOCAL_CFLAGS += -DMR_ENCRYPTION
     LOCAL_SRC_FILES += encryption.c
+
+    # ANCLARK MODIFIED ON 2017-4-7
+    # Add keymaster support
+    ifeq ($(MR_USE_KEYMASTER), true)
+        LOCAL_C_INCLUDES += -DMR_USE_KEYMASTER
+    endif
+
 endif
 
 include $(BUILD_EXECUTABLE)

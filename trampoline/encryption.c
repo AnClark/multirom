@@ -49,6 +49,21 @@ int encryption_before_mount(struct fstab *fstab)
     chmod("/mrom_enc/linker", 0775);
     chmod("/mrom_enc/trampoline_encmnt", 0775);
 
+#ifdef MR_USE_KEYMASTER
+    //ANCLARK MODIFIED 2017-4-7
+    // Prepare keystore library
+#if defined(__LP64__)
+    remove("/system/lib64");
+    mkdir_recursive("/system/lib64/hw", 0755);
+    symlink("/mrom_enc/keystore.default.so", "/system/lib64/hw/keystore.default.so");
+#else
+    remove("/system/lib");
+    mkdir_recursive("/system/lib/hw", 0755);
+    symlink("/mrom_enc/keystore.default.so", "/system/lib/hw/keystore.default.so");
+#endif
+
+#endif
+
     remove("/vendor");
     symlink("/mrom_enc/vendor", "/vendor");
 
@@ -130,6 +145,16 @@ void encryption_destroy(void)
 int encryption_cleanup(void)
 {
     remove("/vendor");
+
+#ifdef MR_USE_KEYMASTER
+
+#if defined(__LP64__)
+    remove("/system/lib64");
+#else
+    remove("/system/lib");
+#endif
+
+#endif
 
     if(access("/firmware", R_OK) >= 0 && umount("/firmware") < 0)
         ERROR("encryption_cleanup: failed to unmount /firmware: %s\n", strerror(errno));

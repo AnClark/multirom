@@ -34,25 +34,42 @@ ifneq ($(MR_DEVICE_VARIANTS),)
 	MR_DEVICES += $(MR_DEVICE_VARIANTS)
 endif
 
+# ANCLARK MODIFIED on 2017-4-7
+# If keymaster switch is turned on, it will be compulsory, or encryption will not work properly.
+ifeq ($(MR_ENCRYPTION), true)
+    ifeq ($(MR_USE_KEYMASTER), true)
+        ifndef MR_KEYMASTER_LIB_PATH
+            $(info *******************************[ E R R O R ! ]*************************************)
+            $(info You must specify the path to keymaster lib in MR_KEYMASTER_LIB_PATH, or encryption won't work.)
+            $(info **********************************************************************************)
+            $(error stop)
+        endif
+    endif
+endif
+
 # ANCLARK MODIFIED on 2017-4-4
 # Qualcomm devices require their own fstab format (fstab.qcom) to work with encryption. 
 # However, this format is not supported by extract_boot_dev.sh. So an exception will occur.
 # To resume making multirom zip, we must prepare another fstab to its appetite.
 ifeq ($(MR_USE_QCOM_SPECIFIED_FSTAB), true)
     $(info =================================================================================================================)
-    $(info                                          N O T I C E !)
+    $(info -                                         N O T I C E !)
     $(info -----------------------------------------------------------------------------------------------------------------)
     $(info This device uses Qualcomm specified fstab file.)
     $(info ------ You can know its syntax by reading /fstab.qcom on your device.)
     $(info =================================================================================================================)
     ifndef MR_FSTAB_FOR_EXTRACTING_BOOTDEV
-        $(error You must specify a standard fstab which Multirom can recognize to generate bootdev info-file. Set it through var MR_FSTAB_FOR_EXTRACTING_BOOTDEV)
+        $(info *******************************[ E R R O R ! ]*************************************)
+        $(info You must specify a standard fstab which Multirom can recognize to generate bootdev info-file. 
+        $(info Set it through var MR_FSTAB_FOR_EXTRACTING_BOOTDEV.)
+        $(info **********************************************************************************)
+        $(error stop)
     else
         MR_FSTAB_FOR_EXTRACTING_BOOTDEV := $(MR_FSTAB_FOR_EXTRACTING_BOOTDEV)
     endif
 else
     $(info =================================================================================================================)
-    $(info                                          N O T I C E !)
+    $(info -                                         N O T I C E !)
     $(info -----------------------------------------------------------------------------------------------------------------)
     $(info   Now Multirom will directly use mrom.fstab you specified.)
     $(info   If you use a Qualcomm device with encryption, you may have to specify a fstab written in Qualcomm's format.)
@@ -60,6 +77,8 @@ else
     $(info =================================================================================================================)
     MR_FSTAB_FOR_EXTRACTING_BOOTDEV := $(MR_FSTAB)
 endif
+
+
 
 $(MULTIROM_ZIP_TARGET): multirom trampoline signapk bbootimg mrom_kexec_static mrom_adbd $(multirom_extra_dep)
 	@echo
@@ -91,6 +110,7 @@ $(MULTIROM_ZIP_TARGET): multirom trampoline signapk bbootimg mrom_kexec_static m
 		\
 		for f in $(TRAMPOLINE_ENCMNT_DEPENDENCIES); do cp -av $(TARGET_OUT_SHARED_LIBRARIES)/$$f $(MULTIROM_INST_DIR)/multirom/enc/; done; \
 		for f in $(TRAMPOLINE_ENCMNT_DEPENDENCIES_VENDOR); do cp -av $(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/$$f $(MULTIROM_INST_DIR)/multirom/enc/; done; \
+                if [ -e "$(MR_KEYMASTER_LIB_PATH)" ]; then cp -av "$(MR_KEYMASTER_LIB_PATH)" $(MULTIROM_INST_DIR)/multirom/enc/keystore.default.so; fi; \
 		if [ -n "$(MR_ENCRYPTION_SETUP_SCRIPT)" ]; then sh "$(ANDROID_BUILD_TOP)/$(MR_ENCRYPTION_SETUP_SCRIPT)" "$(ANDROID_BUILD_TOP)" "$(MULTIROM_INST_DIR)/multirom/enc"; fi; \
 	fi
 

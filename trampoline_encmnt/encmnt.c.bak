@@ -79,15 +79,12 @@ static void print_help(char *argv[]) {
         "     decrypt PASSWORD - decrypt data using PASSWORD.\n"
         "             Prints out dm block device path on success.\n"
         "     remove - unmounts encrypted data\n"
-        "     pwtype - prints password type as integer\n"
-        "\nNOTICE: Debug messages from cryptfs will be printed.\n",
+        "     pwtype - prints password type as integer\n",
         argv[0]);
 }
 
 static int handle_pwtype(int stdout_fd)
 {
-    INFO("WORK MODE: pwtype\n");
-
     if(cryptfs_check_footer() < 0)
     {
         ERROR("cryptfs_check_footer failed!");
@@ -105,18 +102,11 @@ static int handle_pwtype(int stdout_fd)
     snprintf(buff, sizeof(buff), "%d\n", pwtype);
     write(stdout_fd, buff, strlen(buff));
     fsync(stdout_fd);
-
-    //ANCLARK MODIFY 2017-4-5
-    //Log password type to dmesg
-    INFO("Get password type succeed.\n");
-    INFO("Queried password type ID => %d\n", pwtype);
     return 0;
 }
 
 static int handle_decrypt(int stdout_fd, const char *password)
 {
-    INFO("WORK MODE: decrypt\n");
-
     DIR *d;
     struct dirent *de;
     char buff[256];
@@ -191,8 +181,6 @@ static int handle_decrypt(int stdout_fd, const char *password)
 
 static int handle_remove(void)
 {
-    INFO("WORK MODE: remove\n");
-
     if(delete_crypto_blk_dev("userdata") < 0)
     {
         ERROR("delete_crypto_blk_dev failed!");
@@ -249,8 +237,6 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    INFO("Trampoline_encmnt started\n");
-
     fstab = fstab_auto_load();
     if(!fstab)
     {
@@ -272,9 +258,8 @@ int main(int argc, char *argv[])
     set_partition_data(p->device, footer_location, p->type);
 
     // cryptfs prints informations, we don't want that
-    // AnClark disagree 2017-4-5: This will supress debug messages!!!!! STOP DOING THIS!!!!!
     stdout_fd = dup(1);
-    //freopen("/dev/null", "ae", stdout);
+    freopen("/dev/null", "ae", stdout);
 
     switch(cmd)
     {
@@ -294,8 +279,6 @@ int main(int argc, char *argv[])
 
     res = 0;
 exit:
-    
-    INFO("Exit trampoline_encmnt...");
     fstab_destroy(fstab);
     return res;
 }
