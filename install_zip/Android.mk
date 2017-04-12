@@ -50,7 +50,7 @@ endif
 # ANCLARK MODIFIED on 2017-4-4
 # Qualcomm devices require their own fstab format (fstab.qcom) to work with encryption. 
 # However, this format is not supported by extract_boot_dev.sh. So an exception will occur.
-# To resume making multirom zip, we must prepare another fstab to its appetite.
+# To resume making multirom zip, we must prepare another fstab to feed its appetite.
 ifeq ($(MR_USE_QCOM_SPECIFIED_FSTAB), true)
     $(info =================================================================================================================)
     $(info -                                         N O T I C E !)
