@@ -106,6 +106,7 @@ $(MULTIROM_ZIP_TARGET): multirom trampoline signapk bbootimg mrom_kexec_static m
 		mkdir -p $(MULTIROM_INST_DIR)/multirom/enc/res; \
 		cp -a $(TARGET_ROOT_OUT)/trampoline_encmnt $(MULTIROM_INST_DIR)/multirom/enc/; \
 		cp -a $(TARGET_OUT_EXECUTABLES)/linker $(MULTIROM_INST_DIR)/multirom/enc/; \
+		cp -a $(TARGET_OUT_EXECUTABLES)/linker64 $(MULTIROM_INST_DIR)/multirom/enc/; \
 		cp -a $(install_zip_path)/prebuilt-installer/multirom/res/Roboto-Regular.ttf $(MULTIROM_INST_DIR)/multirom/enc/res/; \
 		\
 		for f in $(TRAMPOLINE_ENCMNT_DEPENDENCIES); do cp -av $(TARGET_OUT_SHARED_LIBRARIES)/$$f $(MULTIROM_INST_DIR)/multirom/enc/; done; \
