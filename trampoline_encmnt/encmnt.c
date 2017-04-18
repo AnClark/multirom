@@ -87,6 +87,7 @@ static void print_help(char *argv[]) {
 static int handle_pwtype(int stdout_fd)
 {
     INFO("WORK MODE: pwtype\n");
+    printf("======== WORK MODE: pwtype ========\n\n");
 
     if(cryptfs_check_footer() < 0)
     {
@@ -109,13 +110,17 @@ static int handle_pwtype(int stdout_fd)
     //ANCLARK MODIFY 2017-4-5
     //Log password type to dmesg
     INFO("Get password type succeed.\n");
-    INFO("Queried password type ID => %d\n", pwtype);
+    INFO("Queried password type ID => %s\n", buff);
+    //Also, log to stdout
+    printf("[Get password type:\t=>%s \t]\n", buff);
     return 0;
 }
 
 static int handle_decrypt(int stdout_fd, const char *password)
 {
     INFO("WORK MODE: decrypt\n");
+    printf("======== WORK MODE: decrypt ========\n\n");
+
 
     DIR *d;
     struct dirent *de;
@@ -123,11 +128,17 @@ static int handle_decrypt(int stdout_fd, const char *password)
     int res = -1;
     static const char *default_password = "default_password";
 
+
+    printf("\n\n*** Checking footer...\n");
+
     if(cryptfs_check_footer() < 0)
     {
         ERROR("cryptfs_check_footer failed!");
         return -1;
     }
+
+
+    printf("\n\n*** Getting password type...\n");
 
     int pwtype = cryptfs_get_password_type();
     if(pwtype < 0)
@@ -138,8 +149,12 @@ static int handle_decrypt(int stdout_fd, const char *password)
     else if (pwtype == CRYPT_TYPE_DEFAULT)
         password = default_password;
 
+    printf("\n\n*** Ready to decrypt...\n");
+
     if(password)
     {
+        printf("\n\n*** Attempting to decrypt and mount data partition...\n");
+
         if(cryptfs_check_passwd(password) < 0)
         {
             ERROR("cryptfs_check_passwd failed!");
@@ -148,6 +163,8 @@ static int handle_decrypt(int stdout_fd, const char *password)
     }
     else
     {
+        printf("\n\n*** Senior encryption detected. Switching to Password UI...\n");
+
         switch(pw_ui_run(pwtype))
         {
             default:
@@ -192,6 +209,7 @@ static int handle_decrypt(int stdout_fd, const char *password)
 static int handle_remove(void)
 {
     INFO("WORK MODE: remove\n");
+    printf("======== WORK MODE: remove ========\n\n");
 
     if(delete_crypto_blk_dev("userdata") < 0)
     {
