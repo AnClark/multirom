@@ -112,7 +112,7 @@ static int handle_pwtype(int stdout_fd)
     INFO("Get password type succeed.\n");
     INFO("Queried password type ID => %s\n", buff);
     //Also, log to stdout
-    printf("[Get password type:\t=>%s \t]\n", buff);
+    printf("[Queried password type ID => %s ]\n", buff);
     return 0;
 }
 
@@ -129,7 +129,7 @@ static int handle_decrypt(int stdout_fd, const char *password)
     static const char *default_password = "default_password";
 
 
-    printf("\n\n*** Checking footer...\n");
+    printf("\n*** Checking footer...\n");
 
     if(cryptfs_check_footer() < 0)
     {
@@ -138,7 +138,7 @@ static int handle_decrypt(int stdout_fd, const char *password)
     }
 
 
-    printf("\n\n*** Getting password type...\n");
+    printf("\n*** Getting password type...\n");
 
     int pwtype = cryptfs_get_password_type();
     if(pwtype < 0)
@@ -149,11 +149,11 @@ static int handle_decrypt(int stdout_fd, const char *password)
     else if (pwtype == CRYPT_TYPE_DEFAULT)
         password = default_password;
 
-    printf("\n\n*** Ready to decrypt...\n");
+    printf("\n*** Ready to decrypt...\n");
 
     if(password)
     {
-        printf("\n\n*** Attempting to decrypt and mount data partition...\n");
+        printf("\n*** Attempting to decrypt and mount data partition...\n");
 
         if(cryptfs_check_passwd(password) < 0)
         {
@@ -163,7 +163,7 @@ static int handle_decrypt(int stdout_fd, const char *password)
     }
     else
     {
-        printf("\n\n*** Senior encryption detected. Switching to Password UI...\n");
+        printf("\n*** Senior encryption detected. Switching to Password UI...\n");
 
         switch(pw_ui_run(pwtype))
         {
