@@ -14,7 +14,7 @@ endif
 
 multirom_extra_dep :=
 ifeq ($(MR_ENCRYPTION),true)
-	multirom_extra_dep += trampoline_encmnt linker
+	multirom_extra_dep += trampoline_encmnt linker64 linker
 	
 	# ANCLARK MODIFIED on 2017-4-4
 	# Dependency file list for trampoline_encmnt.

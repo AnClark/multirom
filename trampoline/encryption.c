@@ -47,18 +47,19 @@ int encryption_before_mount(struct fstab *fstab)
 
     //ANCLARK MODIFIED on 2017-04-19
     //Fix linker support
-
-    //Implement linker32 environment (for legacy ARM devices)
-    remove("/system/bin/linker");
-    symlink("/mrom_enc/linker", "/system/bin/linker");
-    chmod("/mrom_enc/linker", 0775);
-    chmod("/mrom_enc/trampoline_encmnt", 0775);
-
+#if defined(__LP64__)
     //Implement linker64 environment (for ARM64 devices)
     remove("/system/bin/linker64");
     symlink("/mrom_enc/linker64", "/system/bin/linker64");
     chmod("/mrom_enc/linker64", 0775);
     chmod("/mrom_enc/trampoline_encmnt", 0775);
+#else
+    //Implement linker32 environment (for legacy ARM devices)
+	remove("/system/bin/linker");
+    symlink("/mrom_enc/linker", "/system/bin/linker");
+    chmod("/mrom_enc/linker", 0775);
+    chmod("/mrom_enc/trampoline_encmnt", 0775);
+#endif
 
 
 #ifdef MR_USE_KEYMASTER
@@ -149,9 +150,18 @@ void encryption_destroy(void)
         free(output);
     }
 
+	
     // Make sure we're removing our symlink and not ROM's linker
+	//ANCLARK MODIFIED on 2017-4-18
+	//Don't to forget 64-bit linker!
+#if defined(__LP64__)
+    if(lstat("/system/bin/linker64", &info) >= 0 && S_ISLNK(info.st_mode))
+        remove("/system/bin/linker64");
+#else
     if(lstat("/system/bin/linker", &info) >= 0 && S_ISLNK(info.st_mode))
         remove("/system/bin/linker");
+#endif
+
 }
 
 int encryption_cleanup(void)
@@ -159,7 +169,7 @@ int encryption_cleanup(void)
     remove("/vendor");
 
 #ifdef MR_USE_KEYMASTER
-
+    //Also destroy keymaster lib directory
 #if defined(__LP64__)
     remove("/system/lib64");
 #else
