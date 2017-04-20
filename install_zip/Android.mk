@@ -14,7 +14,7 @@ endif
 
 multirom_extra_dep :=
 ifeq ($(MR_ENCRYPTION),true)
-	multirom_extra_dep += trampoline_encmnt linker64 linker
+	multirom_extra_dep += trampoline_encmnt linker libstdc++
 	
 	# ANCLARK MODIFIED on 2017-4-4
 	# Dependency file list for trampoline_encmnt.
@@ -22,7 +22,7 @@ ifeq ($(MR_ENCRYPTION),true)
 	TRAMPOLINE_ENCMNT_DEPENDENCIES := \
 		libbacktrace.so libbase.so libcryptfslollipop.so \
 		libcrypto.so libc.so libc++.so libcutils.so libdl.so \
-		libhardware.so liblog.so libm.so libunwind.so libutils.so
+		libhardware.so liblog.so libm.so libstdc++.so libunwind.so libutils.so
 	TRAMPOLINE_ENCMNT_DEPENDENCIES_VENDOR := libcryptfs_hw.so
 
 else
@@ -72,7 +72,8 @@ else
     $(info -                                         N O T I C E !)
     $(info -----------------------------------------------------------------------------------------------------------------)
     $(info   Now Multirom will directly use mrom.fstab you specified.)
-    $(info   If you use a Qualcomm device with encryption, you may have to specify a fstab written in Qualcomm's format.)
+    $(info   If you use a Qualcomm device with encryption, you may have to specify a fstab written in Qualcomm's format,)
+    $(info   OTHERWISE TRAMPOLINE WILL NOT WORK!)
     $(info   ------ You can know its syntax by reading /fstab.qcom on your device.)
     $(info =================================================================================================================)
     MR_FSTAB_FOR_EXTRACTING_BOOTDEV := $(MR_FSTAB)
