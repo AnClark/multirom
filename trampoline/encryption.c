@@ -55,7 +55,7 @@ int encryption_before_mount(struct fstab *fstab)
     chmod("/mrom_enc/trampoline_encmnt", 0775);
 #else
     //Implement linker32 environment (for legacy ARM devices)
-	remove("/system/bin/linker");
+    remove("/system/bin/linker");
     symlink("/mrom_enc/linker", "/system/bin/linker");
     chmod("/mrom_enc/linker", 0775);
     chmod("/mrom_enc/trampoline_encmnt", 0775);
