@@ -157,7 +157,7 @@ static int handle_decrypt(int stdout_fd, const char *password)
 
         if(cryptfs_check_passwd(password) < 0)
         {
-            ERROR("cryptfs_check_passwd failed!");
+            ERROR("CORE DECRYPT FUNCTION FAILED: cryptfs_check_passwd failed!");
             return -1;
         }
     }

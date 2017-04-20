@@ -26,8 +26,8 @@
 #else
   #include <cutils/klog.h>
 
-  #define ERROR(fmt, ...) klog_write(3, "<3>%s: " fmt, mrom_log_tag(), ##__VA_ARGS__)
-  #define INFO(fmt, ...) klog_write(6, "<6>%s: " fmt, mrom_log_tag(), ##__VA_ARGS__)
+  #define ERROR(fmt, ...) klog_write(3, "<3>%s: " fmt "\n", mrom_log_tag(), ##__VA_ARGS__)
+  #define INFO(fmt, ...) klog_write(6, "<6>%s: " fmt "\n", mrom_log_tag(), ##__VA_ARGS__)
 #endif
 
 #endif
