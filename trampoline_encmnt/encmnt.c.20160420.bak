@@ -74,21 +74,7 @@ exit:
 }
 
 static void print_help(char *argv[]) {
-#ifdef MR_SHOW_CRYPTFS_LOG_TO_KMSG
-    fprintf(stderr, "Usage: %s [-d|--debug] COMMAND ARGUMENTS\n"
-        "Available commands:\n"
-        "     decrypt PASSWORD - decrypt data using PASSWORD.\n"
-        "             Prints out dm block device path on success.\n"
-        "     remove - unmounts encrypted data\n"
-        "     pwtype - prints password type as integer\n",
-        argv[0]);
-
-    fprintf(stderr, "\nAdditional switch:\n"
-        "     -d, --debug - Print cryptfs's debug messages to terminal.\n"
-        "         If not specified, it will be printed to kernel log.\n"
-        );
-#else
-    fprintf(stderr, "Usage: %s COMMAND ARGUMENTS\n"
+    printf("Usage: %s COMMAND ARGUMENTS\n"
         "Available commands:\n"
         "     decrypt PASSWORD - decrypt data using PASSWORD.\n"
         "             Prints out dm block device path on success.\n"
@@ -96,12 +82,11 @@ static void print_help(char *argv[]) {
         "     pwtype - prints password type as integer\n"
         "\nNOTICE: Debug messages from cryptfs will be printed.\n",
         argv[0]);
-#endif
 }
 
 static int handle_pwtype(int stdout_fd)
 {
-    INFO("WORK MODE: pwtype");
+    INFO("WORK MODE: pwtype\n");
     printf("======== WORK MODE: pwtype ========\n\n");
 
     if(cryptfs_check_footer() < 0)
@@ -124,16 +109,16 @@ static int handle_pwtype(int stdout_fd)
 
     //ANCLARK MODIFY 2017-4-5
     //Log password type to dmesg
-    INFO("Get password type succeed.");
-    INFO("Queried password type ID => %s", buff);
+    INFO("Get password type succeed.\n");
+    INFO("Queried password type ID => %s\n", buff);
     //Also, log to stdout
-    printf("[Queried password type ID => %s ]", buff);
+    printf("[Queried password type ID => %s ]\n", buff);
     return 0;
 }
 
 static int handle_decrypt(int stdout_fd, const char *password)
 {
-    INFO("WORK MODE: decrypt");
+    INFO("WORK MODE: decrypt\n");
     printf("======== WORK MODE: decrypt ========\n\n");
 
 
@@ -184,10 +169,10 @@ static int handle_decrypt(int stdout_fd, const char *password)
         {
             default:
             case ENCMNT_UIRES_ERROR:
-                ERROR("pw_ui_run() failed!");
+                ERROR("pw_ui_run() failed!\n");
                 return -1;
             case ENCMNT_UIRES_BOOT_INTERNAL:
-                INFO("Wants to boot internal!");
+                INFO("Wants to boot internal!\n");
                 write(stdout_fd, ENCMNT_BOOT_INTERNAL_OUTPUT, strlen(ENCMNT_BOOT_INTERNAL_OUTPUT));
                 fsync(stdout_fd);
                 return 0;
@@ -209,7 +194,7 @@ static int handle_decrypt(int stdout_fd, const char *password)
         if(de->d_type == DT_BLK && strncmp(de->d_name, "dm-", 3) == 0)
         {
             snprintf(buff, sizeof(buff), "/dev/block/%s\n", de->d_name);
-            INFO("Found block device %s", buff);
+            INFO("Found block device %s\n", buff);
             write(stdout_fd, buff, strlen(buff));
             fsync(stdout_fd);
             res = 0;
@@ -223,7 +208,7 @@ static int handle_decrypt(int stdout_fd, const char *password)
 
 static int handle_remove(void)
 {
-    INFO("WORK MODE: remove");
+    INFO("WORK MODE: remove\n");
     printf("======== WORK MODE: remove ========\n\n");
 
     if(delete_crypto_blk_dev("userdata") < 0)
@@ -245,7 +230,6 @@ int main(int argc, char *argv[])
     struct fstab_part *p;
     char *argument = NULL;
 
-
     klog_init();
 
     // output all messages to dmesg,
@@ -255,12 +239,6 @@ int main(int argc, char *argv[])
     mrom_set_log_tag("trampoline_encmnt");
     mrom_set_dir("/mrom_enc/");
 
-#ifdef MR_SHOW_CRYPTFS_LOG_TO_KMSG
-    //ANCLARK MODIFIED on 2017-04-21
-    // Add debug switch --- in debug mode, all info from cryptfs will directedly print to stdout.
-    int debug_mode = 0;
-#endif
-
     for(i = 1; i < argc; ++i)
     {
         if(!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
@@ -268,17 +246,6 @@ int main(int argc, char *argv[])
             print_help(argv);
             return 0;
         }
-
-#ifdef MR_SHOW_CRYPTFS_LOG_TO_KMSG
-        //ANCLARK MODIFIED on 2017-04-20
-        // Use argument to switch debug mode.
-        else if(!strcmp(argv[i], "-d") || !strcmp(argv[i], "--debug"))
-        {
-            debug_mode = 1;
-            INFO("Debug mode activitated --- cryptfs debug info will print on stdout");
-        }
-#endif
-
         else if(cmd == CMD_NONE)
         {
             if(strcmp(argv[i], "decrypt") == 0)
@@ -300,7 +267,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    INFO("Trampoline_encmnt started");
+    INFO("Trampoline_encmnt started\n");
 
     fstab = fstab_auto_load();
     if(!fstab)
@@ -312,45 +279,20 @@ int main(int argc, char *argv[])
     p = fstab_find_first_by_path(fstab, "/data");
     if(!p)
     {
-        ERROR("Failed to find /data partition in fstab");
+        ERROR("Failed to find /data partition in fstab\n");
         goto exit;
     }
 
     if(get_footer_from_opts(footer_location, sizeof(footer_location), p->options2) < 0)
         goto exit;
 
-    INFO("Setting encrypted partition data to %s %s %s", p->device, footer_location, p->type);
+    INFO("Setting encrypted partition data to %s %s %s\n", p->device, footer_location, p->type);
     set_partition_data(p->device, footer_location, p->type);
 
     // cryptfs prints informations, we don't want that
-    // AnClark DISAGREED 2017-4-5: This will supress debug messages!!!!! STOP DOING THIS!!!!!
-    //stdout_fd = dup(1);
+    // AnClark disagree 2017-4-5: This will supress debug messages!!!!! STOP DOING THIS!!!!!
+    stdout_fd = dup(1);
     //freopen("/dev/null", "ae", stdout);
-
-
-#ifdef MR_SHOW_CRYPTFS_LOG_TO_KMSG
-    /**
-       ANCLARK MODIFIED on 2017-04-20
-       Buffer cryptfs log to a string. Notice that cryptfs prints debug info directedly to stdout. 
-       But if we are in debug mode, We will keep stdout original.
-    **/
-
-    // Variables for gathering cryptfs's debug info in stdout
-    FILE *stream;
-    char buff_cryptfs[65536]={'\0'};
-
-    // Configure streams
-    // If not in debug mode, redirect stdout to our buffer.
-    if(!debug_mode)
-    {
-        stream = freopen("/dev/null", "a", stdout);
-        setbuf(stdout, buff_cryptfs);
-    }
-
-    /** Modification end **/
-
-#endif
-
 
     switch(cmd)
     {
@@ -370,30 +312,7 @@ int main(int argc, char *argv[])
 
     res = 0;
 exit:
-
-#ifdef MR_SHOW_CRYPTFS_LOG_TO_KMSG
-    /**
-       ANCLARK MODIFIED on 2017-04-20
-       Print out buffered cryptfs' debug info through kernel log.
-       Use strtok() to split and output log line by line.
-    **/    
-    if(!debug_mode)
-    {
-        fflush(stdout);
-        INFO("============= LOG INFO OF cryptfs =============");
-        
-        char *curr_line = strtok(buff_cryptfs, "\n");
-        while(curr_line){
-                INFO("***  %s", curr_line);
-                curr_line = strtok(NULL, "\n");
-        }
-
-        INFO("===============================================");
-    }
-    /** Modification end **/
-#endif
-
-
+    
     INFO("Exit trampoline_encmnt...");
     fstab_destroy(fstab);
     return res;

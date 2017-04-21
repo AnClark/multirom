@@ -29,6 +29,12 @@ LOCAL_C_INCLUDES += $(multirom_local_path) $(mr_twrp_path) $(mr_twrp_path)/crypt
 # Define _GNU_SOURCE to deal with ambiguous errors
 LOCAL_CFLAGS += -D_GNU_SOURCE -D__GNU_SOURCE
 
+# ANCLARK MODIFIED ON 2017-04-20
+# Allow show cryptfs' log to kernel log.
+ifeq ($(MR_SHOW_CRYPTFS_LOG_TO_KMSG), true)
+    LOCAL_CFLAGS += -DMR_SHOW_CRYPTFS_LOG_TO_KMSG
+endif
+
 
 LOCAL_SRC_FILES := \
     encmnt.c \
