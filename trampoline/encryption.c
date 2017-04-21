@@ -47,33 +47,43 @@ int encryption_before_mount(struct fstab *fstab)
 
     //ANCLARK MODIFIED on 2017-04-19
     //Fix linker support
-#if defined(__LP64__)
     //Implement linker64 environment (for ARM64 devices)
     remove("/system/bin/linker64");
     symlink("/mrom_enc/linker64", "/system/bin/linker64");
     chmod("/mrom_enc/linker64", 0775);
     chmod("/mrom_enc/trampoline_encmnt", 0775);
-#else
+
     //Implement linker32 environment (for legacy ARM devices)
     remove("/system/bin/linker");
     symlink("/mrom_enc/linker", "/system/bin/linker");
     chmod("/mrom_enc/linker", 0775);
     chmod("/mrom_enc/trampoline_encmnt", 0775);
-#endif
+
 
 
 #ifdef MR_USE_KEYMASTER
     //ANCLARK MODIFIED 2017-4-7
     // Prepare keystore library
-#if defined(__LP64__)
+    int ret_symlink_keystore[2] = {-8};
+    
     remove("/system/lib64");
     mkdir_recursive("/system/lib64/hw", 0755);
-    symlink("/mrom_enc/keystore.default.so", "/system/lib64/hw/keystore.default.so");
-#else
+    ret_symlink_keystore[0] = symlink("/mrom_enc/keystore.default.so", "/system/lib64/hw/keystore.default.so");
+
     remove("/system/lib");
     mkdir_recursive("/system/lib/hw", 0755);
-    symlink("/mrom_enc/keystore.default.so", "/system/lib/hw/keystore.default.so");
-#endif
+    ret_symlink_keystore[1] = symlink("/mrom_enc/keystore.default.so", "/system/lib/hw/keystore.default.so");
+
+
+    //Check if keystore module prepared or not
+    if(ret_symlink_keystore[0] == 0)
+        INFO("Keystore library 64-bit prepared.");
+    else
+        ERROR("FATAL: Keystore library 64-bit prepare failure!");
+    if(ret_symlink_keystore[1] == 0)
+        INFO("Keystore library 32-bit prepared.");
+    else 
+        ERROR("FATAL: Keystore library 32-bit prepare failure!");    
 
 #endif
 
@@ -153,14 +163,14 @@ void encryption_destroy(void)
 	
     // Make sure we're removing our symlink and not ROM's linker
 	//ANCLARK MODIFIED on 2017-4-18
-	//Don't to forget 64-bit linker!
-#if defined(__LP64__)
+	//Don't forget 64-bit linker!
+
     if(lstat("/system/bin/linker64", &info) >= 0 && S_ISLNK(info.st_mode))
         remove("/system/bin/linker64");
-#else
+
     if(lstat("/system/bin/linker", &info) >= 0 && S_ISLNK(info.st_mode))
         remove("/system/bin/linker");
-#endif
+
 
 }
 
@@ -168,14 +178,13 @@ int encryption_cleanup(void)
 {
     remove("/vendor");
 
+//ANCLARK MODIFIED ON 2017-04-21
+//Also cleanup keymaster lib. But you can keep it with MR_DEBUG_KEEP_KEYMASTER_DEFAULT.
 #ifdef MR_USE_KEYMASTER
-    //Also destroy keymaster lib directory
-#if defined(__LP64__)
-    remove("/system/lib64");
-#else
-    remove("/system/lib");
-#endif
-
+    #ifndef MR_DEBUG_KEEP_KEYMASTER_DEFAULT_SO
+        remove("/system/lib64/hw/keystore.default.so");
+        remove("/system/lib/hw/keystore.default.so");
+    #endif
 #endif
 
     if(access("/firmware", R_OK) >= 0 && umount("/firmware") < 0)

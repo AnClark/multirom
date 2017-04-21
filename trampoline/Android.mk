@@ -46,9 +46,15 @@ ifeq ($(MR_ENCRYPTION),true)
     # ANCLARK MODIFIED ON 2017-4-7
     # Add keymaster support
     ifeq ($(MR_USE_KEYMASTER), true)
-        LOCAL_C_INCLUDES += -DMR_USE_KEYMASTER
+        LOCAL_CFLAGS += -DMR_USE_KEYMASTER
     endif
 
+endif
+
+# ANCLARK MODIFIED on 2017-04-21
+# Allow keep keystore.default.so module for further debugging when in Android
+ifeq ($(MR_DEBUG_KEEP_KEYMASTER_DEFAULT_SO), true)
+    LOCAL_CFLAGS += -DMR_DEBUG_KEEP_KEYMASTER_DEFAULT_SO
 endif
 
 include $(BUILD_EXECUTABLE)
