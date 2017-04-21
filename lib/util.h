@@ -28,6 +28,10 @@
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
+//ANCLARK MODIFIED on 2017-04-21
+// Checking if file exists.
+#define FILEEXISTS(x) access(x, 0) == 0
+
 #define REBOOT_SYSTEM 0
 #define REBOOT_RECOVERY 1
 #define REBOOT_BOOTLOADER 2
