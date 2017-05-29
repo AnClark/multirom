@@ -1,16 +1,26 @@
-# MultiROM
-MultiROM is a one-of-a-kind multi-boot solution. It can boot android ROM while
+# AnClark's MultiROM Distribution
+This is one of the distributions of MultiROM. Compared with Tassadar's original version, I am trying to add some essential features to make it support more devices besides Nexus series.
+
+## What is MultiROM?
+MultiROM is a one-of-a-kind multi-boot solution **written by Tassadar**. It can boot android ROM while
 keeping the one in internal memory intact or boot Ubuntu without formating
 the whole device. MultiROM can boot either from internal memory of the device
 or from USB flash drive.
 
-XDA threads:
-* grouper: http://forum.xda-developers.com/showthread.php?t=2011403
-* flo: http://forum.xda-developers.com/showthread.php?t=2457063
-* mako: http://forum.xda-developers.com/showthread.php?p=46223377
-* hammerhead: http://forum.xda-developers.com/showthread.php?t=2571011
+## What am I taking efforts with?
+### ENCRYPTION
+Due to Google's policy, nowadays encryption is already a MUST for phones using Android 6.0 or newer, and the most popular solution is Qualcomm's QSEECOM.
 
-###Sources
+From code, we can know that Tassadar has already written an interface for encryption, but it cannot support encryption well. When testing MultiROM with those devices using QSEECOM, MultiROM dies, as currently MultiROM **DOESN'T SUPPORT QSEECOM AT ALL**. Developer @zhuowei provided his solution a year ago, but Tassadar didn't apply.
+
+So here's my work: let MultiROM support QSEECOM. My device is Xiaomi Max with Qualcomm Snapdragon 652, and I think if I were succeed, my efforts would also fit other devices using Qualcomm's solution.
+
+## Notice
+Don't forget that MultiROM is open-source, so I sincerely expect that all developers love MultiROM can join, and make it much better!
+
+
+## Official build guides
+### Sources
 MultiROM uses git submodules, so you need to clone them as well:
 
     git clone https://github.com/Tasssadar/multirom.git system/extras/multirom
