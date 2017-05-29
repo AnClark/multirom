@@ -2,7 +2,7 @@
 This is one of the distributions of MultiROM. Compared with Tassadar's original version, I am trying to add some essential features to make it support more devices besides Nexus series.
 
 ## What is MultiROM?
-MultiROM is a one-of-a-kind multi-boot solution **written by Tassadar**. It can boot android ROM while
+MultiROM is a one-of-a-kind multi-boot solution **founded by Tassadar**. It can boot android ROM while
 keeping the one in internal memory intact or boot Ubuntu without formating
 the whole device. MultiROM can boot either from internal memory of the device
 or from USB flash drive.
